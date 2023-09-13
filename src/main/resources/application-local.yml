@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: mym-api-gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: user-login
+          uri: lb://mym-user-authentication-service
+          predicates:
+            - Path=/mym/app/users/login
+            - Method=POST
+        - id: user-service
+          uri: lb://mym-user-authentication-service
+          predicates:
+            - Path=/mym/api/users/**
+            - Method=GET, POST, PUT
+
+server:
+  port: 8562
+
+myEureka:
+  username: 'rkumar0206'
+  password: '123456789P'
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://${myEureka.username}:${myEureka.password}@localhost:8845/eureka
+  instance:
+    prefer-ip-address: true
+    lease-expiration-duration-in-seconds: 30
+    lease-renewal-interval-in-seconds: 30
