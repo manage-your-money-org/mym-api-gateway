@@ -18,6 +18,11 @@ spring:
           predicates:
             - Path=/mym/api/users/**
             - Method=GET, POST, PUT
+        - id: expense-category-service
+          uri: lb://mym-expense-category-service
+          predicates:
+            - Path=/mym/api/expensecategories/**
+            - Method=GET, POST, PUT, DELETE
 
 server:
   port: 8562
@@ -34,3 +39,6 @@ eureka:
     prefer-ip-address: true
     lease-expiration-duration-in-seconds: 30
     lease-renewal-interval-in-seconds: 30
+
+token:
+  secret: abjabhvavvatttafgvctafcfXxFYTrtfytratrtyactyafhgavcghav__DBhevv$$$4

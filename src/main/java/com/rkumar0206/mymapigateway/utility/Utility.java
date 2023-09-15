@@ -1,5 +1,10 @@
 package com.rkumar0206.mymapigateway.utility;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.core.io.buffer.DataBuffer;
@@ -36,4 +41,11 @@ public class Utility {
         DataBuffer dataBuffer = response.bufferFactory().wrap(error.getBytes(StandardCharsets.UTF_8));
         return response.writeWith(Mono.just(dataBuffer));
     }
+
+    public static DecodedJWT isTokenValid(String token, Algorithm algorithm) throws JWTVerificationException {
+
+        JWTVerifier jwtVerifier = JWT.require(algorithm).build();
+        return jwtVerifier.verify(token);
+    }
+
 }
