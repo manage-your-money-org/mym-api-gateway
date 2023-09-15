@@ -90,16 +90,6 @@ public class AuthorizationFilter implements GlobalFilter {
                 } catch (Exception e) {
                     return Utility.onError(exchange, e.getMessage());
                 }
-
-                //if authorization token is present call the user service and get the user details
-//                try {
-//
-//                        exchange.getRequest().getHeaders().add(Constants.USER_INFO_HEADER_NAME, new ObjectMapper().writeValueAsString(userResponseBody.getBody()));
-//                } catch (Exception e) {
-//
-//                    return Utility.onError(exchange, e.getMessage());
-//                }
-
             } else {
                 return Utility.onError(exchange, ErrorMessageConstants.NO_AUTH_HEADER_PRESENT_ERROR);
             }
