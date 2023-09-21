@@ -23,6 +23,11 @@ spring:
           predicates:
             - Path=/mym/api/expensecategories/**
             - Method=GET, POST, PUT, DELETE
+        - id: expense-service
+          uri: lb://mym-expense-service
+          predicates:
+            - Path=/mym/api/expenses/**
+            - Method=GET, POST, PUT, DELETE
 
 server:
   port: 8562

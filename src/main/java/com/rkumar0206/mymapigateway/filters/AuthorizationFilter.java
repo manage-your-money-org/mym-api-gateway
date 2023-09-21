@@ -73,6 +73,10 @@ public class AuthorizationFilter implements GlobalFilter {
                         return Utility.onError(exchange, ErrorMessageConstants.INVALID_AUTH_TOKEN);
                     }
 
+                    if (!isAccountVerified.asBoolean()) {
+                        return Utility.onError(exchange, ErrorMessageConstants.ACCOUNT_NOT_VERIFIED_ERROR);
+                    }
+
                     UserInfo userInfo = new UserInfo(
                             name.asString(),
                             emailId,
