@@ -18,16 +18,36 @@ spring:
           predicates:
             - Path=/mym/api/users/**
             - Method=GET, POST, PUT
+        - id: user-service-actuator
+          uri: lb://mym-user-authentication-service
+          predicates:
+            - Path=/mym/mym-user-authentication-service/actuator/**
+            - Method=GET, POST
         - id: expense-category-service
           uri: lb://mym-expense-category-service
           predicates:
             - Path=/mym/api/expensecategories/**
             - Method=GET, POST, PUT, DELETE
+        - id: expense-category-service
+          uri: lb://mym-expense-category-service
+          predicates:
+            - Path=/mym/mym-expense-category-service/actuator/**
+            - Method=GET, POST
         - id: expense-service
           uri: lb://mym-expense-service
           predicates:
             - Path=/mym/api/expenses/**
             - Method=GET, POST, PUT, DELETE
+        - id: expense-service
+          uri: lb://mym-expense-service
+          predicates:
+            - Path=/mym/mym-expense-service/actuator/**
+            - Method=GET, POST
+        - id: mym-email-and-notification-service
+          uri: lb://mym-email-and-notification-service
+          predicates:
+            - Path=/mym/mym-email-and-notification-service/actuator/**
+            - Method=GET, POST
 
 server:
   port: 8562
@@ -47,3 +67,11 @@ eureka:
 
 token:
   secret: abjabhvavvatttafgvctafcfXxFYTrtfytratrtyactyafhgavcghav__DBhevv$$$4
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - "*"
+      base-path: "/mym/${spring.application.name}/actuator"

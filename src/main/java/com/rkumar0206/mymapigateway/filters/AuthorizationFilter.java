@@ -8,6 +8,7 @@ import com.rkumar0206.mymapigateway.constants.Constants;
 import com.rkumar0206.mymapigateway.constants.ErrorMessageConstants;
 import com.rkumar0206.mymapigateway.models.UserInfo;
 import com.rkumar0206.mymapigateway.utility.Utility;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -21,6 +22,7 @@ import java.util.List;
 import static com.rkumar0206.mymapigateway.constants.Constants.BEARER;
 
 @Component
+@Slf4j
 public class AuthorizationFilter implements GlobalFilter {
 
     @Value("${token.secret}")
@@ -31,11 +33,17 @@ public class AuthorizationFilter implements GlobalFilter {
 
         String requestUrl = exchange.getRequest().getPath().toString();
 
+        log.info("request-url: " + requestUrl);
+
         //if the endpoint corresponds to user service, just call the user service
-        if (requestUrl.contains("/mym/app/users/login") || requestUrl.contains("/mym/api/users/")) {
+        if (requestUrl.contains("/mym/app/users/login") || requestUrl.contains("/mym/api/users/") || requestUrl.contains("/actuator")) {
+
+            log.info("No authorization header required");
 
             return chain.filter(exchange);
         } else {
+
+            log.info("Checking for authorization header");
 
             //check if authorization header is present or not
             List<String> tempAuthHeader = exchange.getRequest().getHeaders().get(HttpHeaders.AUTHORIZATION);
@@ -92,6 +100,8 @@ public class AuthorizationFilter implements GlobalFilter {
                     return chain.filter(request.build());
 
                 } catch (Exception e) {
+
+                    log.info("Exception occurred while checking authorization token: " + e.getMessage());
                     return Utility.onError(exchange, e.getMessage());
                 }
             } else {
