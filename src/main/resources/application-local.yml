@@ -75,3 +75,20 @@ management:
         include:
           - "*"
       base-path: "/mym/${spring.application.name}/actuator"
+
+mymrabbitmq:
+  mqHost: localhost
+  mqPort: 15672
+  newUser:
+    username: 'mym_rkumar0206'
+    password: 'mym_password_123'
+  vhost:
+    name: "mym-env-test"
+  mymExchange:
+    name: "MYM"
+  mymQueues:
+    - "mym-email-notification-service"
+  bindings:
+    - mym.user.password.reset
+    - mym.user.email.update.otp
+    - mym.user.account.verification
