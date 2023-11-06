@@ -72,6 +72,10 @@ public class MymApiGatewayApplication {
                 CreateBinding createBinding = new CreateBinding(binding);
                 rabbitMQDynamicSetupService.createBinding(createBinding, mymRabbitMQConfig.getMymQueues().get(0));
             }
+            //======================
+
+            // disable guest user
+            rabbitMQDynamicSetupService.disableGuestUser();
         };
     }
 }

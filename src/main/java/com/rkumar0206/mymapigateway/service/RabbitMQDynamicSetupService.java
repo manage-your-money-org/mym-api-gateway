@@ -19,4 +19,6 @@ public interface RabbitMQDynamicSetupService {
 
     void createRabbitMqUser();
 
+    void disableGuestUser();
+
 }

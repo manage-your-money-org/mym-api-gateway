@@ -29,11 +29,8 @@ public class RabbitMQDynamicSetupServiceImpl implements RabbitMQDynamicSetupServ
 
         String createBidingUrl = baseRabbitMqUrl + "/bindings/" + mymRabbitMQConfig.getVhost().getName() + "/e/" + mymRabbitMQConfig.getMymExchange().getName() + "/q/" + queueName;
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBasicAuth(mymRabbitMQConfig.getNewUser().getUsername(), mymRabbitMQConfig.getNewUser().getPassword());
-
         HttpEntity<CreateBinding> createBindingHttpEntity1 = new HttpEntity<>(
-                createBinding, headers
+                createBinding, getHttpHeader()
         );
 
         ResponseEntity<String> createBindingResponse = restTemplate.exchange(
@@ -52,11 +49,8 @@ public class RabbitMQDynamicSetupServiceImpl implements RabbitMQDynamicSetupServ
 
         String createQueueUrl = baseRabbitMqUrl + "/queues/" + mymRabbitMQConfig.getVhost().getName() + "/" + queueName;
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBasicAuth(mymRabbitMQConfig.getNewUser().getUsername(), mymRabbitMQConfig.getNewUser().getPassword());
-
         HttpEntity<CreateQueue> createQueueHttpEntity = new HttpEntity<>(
-                createQueue, headers
+                createQueue, getHttpHeader()
         );
 
         ResponseEntity<String> createQueueResponse = restTemplate.exchange(
@@ -75,11 +69,8 @@ public class RabbitMQDynamicSetupServiceImpl implements RabbitMQDynamicSetupServ
 
         String createExchangeUrl = baseRabbitMqUrl + "/exchanges/" + mymRabbitMQConfig.getVhost().getName() + "/" + mymRabbitMQConfig.getMymExchange().getName();
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBasicAuth(mymRabbitMQConfig.getNewUser().getUsername(), mymRabbitMQConfig.getNewUser().getPassword());
-
         HttpEntity<CreateExchange> createExchangeHttpEntity = new HttpEntity<>(
-                createExchange, headers
+                createExchange, getHttpHeader()
         );
 
         ResponseEntity<String> createExchangeResponse = restTemplate.exchange(
@@ -99,10 +90,7 @@ public class RabbitMQDynamicSetupServiceImpl implements RabbitMQDynamicSetupServ
 
         String topicPermissionBaseUrl = baseRabbitMqUrl + "/topic-permissions/" + mymRabbitMQConfig.getVhost().getName() + "/" + mymRabbitMQConfig.getNewUser().getUsername();
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBasicAuth(mymRabbitMQConfig.getNewUser().getUsername(), mymRabbitMQConfig.getNewUser().getPassword());
-
-        HttpEntity<TopicPermission> topicPermissionRequestEntity = new HttpEntity<>(topicPermission, headers);
+        HttpEntity<TopicPermission> topicPermissionRequestEntity = new HttpEntity<>(topicPermission, getHttpHeader());
 
         ResponseEntity<String> topicPermissionResponse1 = restTemplate.exchange(
                 topicPermissionBaseUrl, HttpMethod.PUT, topicPermissionRequestEntity, String.class
@@ -121,10 +109,7 @@ public class RabbitMQDynamicSetupServiceImpl implements RabbitMQDynamicSetupServ
         // Create new Vhost
         String createVHostBaseUrl = baseRabbitMqUrl + "/vhosts/" + mymRabbitMQConfig.getVhost().getName();
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBasicAuth(mymRabbitMQConfig.getNewUser().getUsername(), mymRabbitMQConfig.getNewUser().getPassword());
-
-        HttpEntity<RabbitMQUser> vhostRequestEntity = new HttpEntity<>(null, headers);
+        HttpEntity<RabbitMQUser> vhostRequestEntity = new HttpEntity<>(null, getHttpHeader());
         ResponseEntity<String> vhostResponse = restTemplate.exchange(createVHostBaseUrl, HttpMethod.PUT, vhostRequestEntity, String.class);
 
         if (vhostResponse.getStatusCode().is2xxSuccessful()) {
@@ -153,4 +138,30 @@ public class RabbitMQDynamicSetupServiceImpl implements RabbitMQDynamicSetupServ
             System.err.println("Failed to create rabbitmq user.");
         }
     }
+
+    @Override
+    public void disableGuestUser() {
+
+        String disableGuestUserUrl = baseRabbitMqUrl + "/users/guest";
+
+        HttpEntity<RabbitMQUser> disableGuestUserHttpEntity = new HttpEntity<>(null, getHttpHeader());
+        ResponseEntity<String> disableGuestUserResponse = restTemplate.exchange(
+                disableGuestUserUrl, HttpMethod.DELETE, disableGuestUserHttpEntity, String.class
+        );
+
+        if (disableGuestUserResponse.getStatusCode().is2xxSuccessful()) {
+            System.out.println("Guest User disabled successfully.");
+        } else {
+            System.err.println("Failed to disable guest user.");
+        }
+    }
+
+    private HttpHeaders getHttpHeader() {
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBasicAuth(mymRabbitMQConfig.getNewUser().getUsername(), mymRabbitMQConfig.getNewUser().getPassword());
+
+        return headers;
+    }
+
 }
