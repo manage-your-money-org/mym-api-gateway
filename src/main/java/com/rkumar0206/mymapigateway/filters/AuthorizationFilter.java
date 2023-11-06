@@ -38,7 +38,7 @@ public class AuthorizationFilter implements GlobalFilter {
         //if the endpoint corresponds to user service, just call the user service
         if (requestUrl.contains("/mym/app/users/login") || requestUrl.contains("/mym/api/users/") || requestUrl.contains("/actuator")) {
 
-            log.info("No authorization header required");
+            log.info("Authorization header not required or it will be verified in mym-user-authentication-service");
 
             return chain.filter(exchange);
         } else {

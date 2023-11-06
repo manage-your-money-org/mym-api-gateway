@@ -48,6 +48,12 @@ spring:
           predicates:
             - Path=/mym/mym-email-and-notification-service/actuator/**
             - Method=GET, POST
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: 'mym_rkumar0206'
+    password: 'mym_password_123'
+    virtual-host: ${rabbitmqserver.env:mym-env-test}
 
 server:
   port: 8562
@@ -75,3 +81,20 @@ management:
         include:
           - "*"
       base-path: "/mym/${spring.application.name}/actuator"
+
+mymrabbitmq:
+  mqHost: localhost
+  mqPort: 15672   # this is the rabbitmq management plugin api port
+  newUser:
+    username: 'mym_rkumar0206'
+    password: 'mym_password_123'
+  vhost:
+    name: ${rabbitmqserver.env:mym-env-test}
+  mymExchange:
+    name: "MYM"
+  mymQueues:
+    - "mym-email-notification-service"
+  bindings:
+    - mym.user.password.reset
+    - mym.user.email.update.otp
+    - mym.user.account.verification
