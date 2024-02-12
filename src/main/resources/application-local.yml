@@ -11,13 +11,57 @@ spring:
         - id: user-login
           uri: lb://mym-user-authentication-service
           predicates:
-            - Path=/mym/app/users/login
-            - Method=POST
+            - Path=/mym/app/users/**
+            - Method=POST,GET
         - id: user-service
           uri: lb://mym-user-authentication-service
           predicates:
             - Path=/mym/api/users/**
             - Method=GET, POST, PUT
+        - id: user-service-actuator
+          uri: lb://mym-user-authentication-service
+          predicates:
+            - Path=/mym/mym-user-authentication-service/actuator/**
+            - Method=GET, POST
+        - id: expense-category-service
+          uri: lb://mym-expense-category-service
+          predicates:
+            - Path=/mym/api/expensecategories/**
+            - Method=GET, POST, PUT, DELETE
+        - id: expense-category-service
+          uri: lb://mym-expense-category-service
+          predicates:
+            - Path=/mym/mym-expense-category-service/actuator/**
+            - Method=GET, POST
+        - id: expense-service
+          uri: lb://mym-expense-service
+          predicates:
+            - Path=/mym/api/expenses/**
+            - Method=GET, POST, PUT, DELETE
+        - id: expense-service
+          uri: lb://mym-expense-service
+          predicates:
+            - Path=/mym/mym-expense-service/actuator/**
+            - Method=GET, POST
+        - id: mym-email-and-notification-service
+          uri: lb://mym-email-and-notification-service
+          predicates:
+            - Path=/mym/mym-email-and-notification-service/actuator/**
+            - Method=GET, POST
+      globalcors:
+        add-to-simple-url-handler-mapping: true
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "http://localhost:4200"
+            allowedMethods: "*"
+            allowedHeaders: "*"
+            allowCredentials: true
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: 'mym_rkumar0206'
+    password: 'mym_password_123'
+    virtual-host: ${rabbitmqserver.env:mym-env-test}
 
 server:
   port: 8562
@@ -34,3 +78,31 @@ eureka:
     prefer-ip-address: true
     lease-expiration-duration-in-seconds: 30
     lease-renewal-interval-in-seconds: 30
+
+token:
+  secret: abjabhvavvatttafgvctafcfXxFYTrtfytratrtyactyafhgavcghav__DBhevv$$$4
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - "*"
+      base-path: "/mym/${spring.application.name}/actuator"
+
+mymrabbitmq:
+  mqHost: localhost
+  mqPort: 15672   # this is the rabbitmq management plugin api port
+  newUser:
+    username: 'mym_rkumar0206'
+    password: 'mym_password_123'
+  vhost:
+    name: ${rabbitmqserver.env:mym-env-test}
+  mymExchange:
+    name: "MYM"
+  mymQueues:
+    - "mym-email-notification-service"
+  bindings:
+    - mym.user.password.reset
+    - mym.user.email.update.otp
+    - mym.user.account.verification
