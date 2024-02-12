@@ -46,11 +46,12 @@ public class AuthorizationFilter implements GlobalFilter {
         log.info("request-url: " + requestUrl);
 
         //if the endpoint corresponds to user service, just call the user service
-        if (requestUrl.contains("/mym/app/users/login") || requestUrl.contains("/mym/api/users/") || requestUrl.contains("/actuator")) {
+        if (requestUrl.contains("/mym/app/users/") || requestUrl.contains("/mym/api/users/") || requestUrl.contains("/actuator")) {
 
             log.info("Authorization header not required or it is for mym-user-authentication-service");
 
             return chain.filter(exchange);
+
         } else {
 
             // check if tokens are present in cookies or not
@@ -113,7 +114,14 @@ public class AuthorizationFilter implements GlobalFilter {
                                     .path("/")
                                     .build();
 
+                            // sending access token as refresh token for now
+                            ResponseCookie refreshTokenCookie = ResponseCookie.from(Constants.REFRESH_TOKEN, token)
+                                    .httpOnly(true)
+                                    .path("/")
+                                    .build();
+
                             response.addCookie(accessTokenCookie);
+                            response.addCookie(refreshTokenCookie);
 
                         }));
             } catch (JWTVerificationException ex) {

@@ -11,8 +11,8 @@ spring:
         - id: user-login
           uri: lb://mym-user-authentication-service
           predicates:
-            - Path=/mym/app/users/login
-            - Method=POST
+            - Path=/mym/app/users/**
+            - Method=POST,GET
         - id: user-service
           uri: lb://mym-user-authentication-service
           predicates:
@@ -53,11 +53,7 @@ spring:
         corsConfigurations:
           '[/**]':
             allowedOrigins: "http://localhost:4200"
-            allowedMethods:
-              - GET
-              - PUT
-              - POST
-              - DELETE
+            allowedMethods: "*"
             allowedHeaders: "*"
             allowCredentials: true
   rabbitmq:
