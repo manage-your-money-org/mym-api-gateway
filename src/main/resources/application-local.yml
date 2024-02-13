@@ -38,6 +38,11 @@ spring:
           predicates:
             - Path=/mym/api/expenses/**
             - Method=GET, POST, PUT, DELETE
+        - id: expense-payment-method-service
+          uri: lb://mym-expense-service
+          predicates:
+            - Path=/mym/api/payment-methods/**
+            - Method=GET, POST, PUT, DELETE
         - id: expense-service
           uri: lb://mym-expense-service
           predicates:
